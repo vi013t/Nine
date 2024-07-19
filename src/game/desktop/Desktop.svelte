@@ -1,12 +1,11 @@
 <script>
-	import wallpaper from "../../assets/wallpaper.jpg";
 	import Terminal from "../apps/Terminal.svelte";
 	import AppLauncher from "./taskbar/AppLauncher.svelte";
 	import Taskbar from "./taskbar/Taskbar.svelte";
 </script>
 
 <!-- The main desktop -->
-<section style="background-image: url('{wallpaper}');">
+<section>
 	<AppLauncher />
 	<Terminal />
 	<Taskbar />
@@ -17,7 +16,6 @@
 	section {
 		width: 100%;
 		height: 100%;
-		background-size: cover;
-		background-position: center;
+		background-color: steelblue;
 	}
 </style>

@@ -8,7 +8,12 @@
 }
 
 button {
-	cursor: pointer;
+	cursor: url("/src/assets/textures/pointer.png"), auto;
+	user-select: none;
+
+	* {
+		pointer-events: none;
+	}
 }
 
 html {

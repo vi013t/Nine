@@ -1,12 +1,13 @@
 <script lang="ts">
-	const buttons = ["apps", "browser", "chat", "files"] as const satisfies string[];
+	const buttons = ["Apps", "Browser", "Chat", "Files"] as const satisfies string[];
 </script>
 
 <!-- Main taskbar content -->
 <section>
 	{#each buttons as button}
 		<button>
-			<img src="/src/assets/icons/{button}.png" alt="{button} taskbar icon" />
+			<img src="/src/assets/icons/{button.toLowerCase()}.png" alt="{button} taskbar icon" />
+			{button}
 		</button>
 	{/each}
 </section>
@@ -23,46 +24,43 @@
 		justify-content: center;
 		align-items: center;
 		background-color: lightgray;
-		border-top: 0.4rem solid ghostwhite;
-		gap: 0.2rem;
+		border-top: 0.2rem solid ghostwhite;
+		gap: 0.4rem;
 
 		// App icon buttons on the taskbar
 		button {
-			height: 90%;
-			aspect-ratio: 1;
+			height: 80%;
 			padding: 0.8rem;
 			position: relative;
+			font-family: "Consolas";
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 0.5rem;
 
-			// App icon selection background
-			&::before {
-				content: "";
-				width: 100%;
-				height: 100%;
-				background-color: rgba(255, 255, 255);
-				border-radius: 10px;
-				position: absolute;
-				top: 0px;
-				left: 0px;
-				opacity: 0%;
-				transition: opacity 0.1s;
-			}
-
-			// Selection background only visible on hover
-			&:hover::before {
-				opacity: 5%;
-			}
+			// Old-fashioned borders
+			border-top: 3px solid ghostwhite;
+			border-left: 3px solid ghostwhite;
+			border-bottom: 3px solid gray;
+			border-right: 3px solid gray;
 
 			// App icon itself
 			img {
-				width: 100%;
-				height: 100%;
-				background-size: cover;
-				background-position: center;
+				height: 1rem;
+				width: 1rem;
 
 				// Scale pixel art properly
 				image-rendering: pixelated;
 				image-rendering: -moz-crisp-edges;
 				image-rendering: crisp-edges;
+			}
+
+			&:active {
+				// Old-fashioned borders
+				border-bottom: 5px solid ghostwhite;
+				border-right: 5px solid ghostwhite;
+				border-top: 5px solid gray;
+				border-left: 5px solid gray;
 			}
 		}
 	}
