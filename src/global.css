@@ -5,6 +5,8 @@
 	background: transparent;
 	border: none;
 	outline: none;
+	cursor: inherit;
+	font-family: inherit;
 }
 
 button {
@@ -12,7 +14,7 @@ button {
 	user-select: none;
 
 	* {
-		pointer-events: none;
+		cursor: url("/src/assets/textures/pointer.png"), auto;
 	}
 }
 

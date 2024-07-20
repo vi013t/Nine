@@ -1,13 +1,27 @@
 <script lang="ts">
-	const buttons = ["Apps", "Browser", "Chat", "Files"] as const satisfies string[];
+	import AppLauncher from "../../apps/AppLauncher.svelte";
+	import Browser from "../../apps/Browser.svelte";
+	import Chat from "../../apps/Chat.svelte";
+	import Files from "../../apps/Files.svelte";
+	import { openWindow, type Component } from "../Desktop.svelte";
+
+	const pinnedApps = [
+		{ name: "Apps", app: AppLauncher },
+		{ name: "Browser", app: Browser },
+		{ name: "Chat", app: Chat },
+		{ name: "Files", app: Files },
+	] as const satisfies {
+		name: string;
+		app: Component;
+	}[];
 </script>
 
 <!-- Main taskbar content -->
 <section>
-	{#each buttons as button}
-		<button>
-			<img src="/src/assets/icons/{button.toLowerCase()}.png" alt="{button} taskbar icon" />
-			{button}
+	{#each pinnedApps as app}
+		<button on:click={() => openWindow(app.app)}>
+			<img src="/src/assets/icons/{app.name.toLowerCase()}.png" alt="{app} app icon" />
+			{app.name}
 		</button>
 	{/each}
 </section>
@@ -57,10 +71,10 @@
 
 			&:active {
 				// Old-fashioned borders
-				border-bottom: 5px solid ghostwhite;
-				border-right: 5px solid ghostwhite;
-				border-top: 5px solid gray;
-				border-left: 5px solid gray;
+				border-bottom: 3px solid ghostwhite;
+				border-right: 3px solid ghostwhite;
+				border-top: 3px solid gray;
+				border-left: 3px solid gray;
 			}
 		}
 	}

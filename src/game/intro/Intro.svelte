@@ -14,6 +14,7 @@
 		"i cant remember anything.",
 		"its dark. im scared.",
 		"theres nothing here but a mattress and a computer.",
+		"...",
 		"the door is locked.",
 		"...",
 		"i guess all i can do is check the computer.",

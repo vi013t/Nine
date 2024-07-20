@@ -1,13 +1,19 @@
-<script>
-	import Terminal from "../apps/Terminal.svelte";
-	import AppLauncher from "./taskbar/AppLauncher.svelte";
+<script lang="ts" context="module">
 	import Taskbar from "./taskbar/Taskbar.svelte";
+
+	export type Component = { new (properties: { target: HTMLElement }): unknown };
+
+	let windows = new Set<unknown>();
+
+	export function openWindow(component: Component) {
+		new component({
+			target: document.getElementById("desktop")!,
+		});
+	}
 </script>
 
 <!-- The main desktop -->
-<section>
-	<AppLauncher />
-	<Terminal />
+<section id="desktop">
 	<Taskbar />
 </section>
 

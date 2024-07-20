@@ -1,102 +1,95 @@
 <script lang="ts">
-    let terminal: HTMLElement;
+	import Window from "./Window.svelte";
 
-    type Command = (positionalArguments: string[], shortArguments: string[], longArguments: string[]) => string;
+	let terminal: HTMLElement;
 
-    const commands = {
-        echo(positionalArguments, shortArguments, longArguments) {
-            return positionalArguments[0] + "<br/>";
-        },
-    } as const satisfies { [key: string]: Command };
+	type Command = (positionalArguments: string[], shortArguments: string[], longArguments: string[]) => string;
 
-    let currentCommand = "";
+	const commands = {
+		echo(positionalArguments, shortArguments, longArguments) {
+			return positionalArguments[0] + "<br/>";
+		},
+	} as const satisfies { [key: string]: Command };
 
-    document.addEventListener("keypress", (event) => {
-        if (event.key === "Enter") {
-            terminal.innerHTML += "<br/>";
-            runCommand();
-            terminal.innerHTML += "&gt; ";
-            currentCommand = "";
-            return;
-        }
-        terminal.innerHTML += event.key;
-        currentCommand += event.key;
-    });
+	let currentCommand = "";
 
-    function runCommand() {
-        const tokenTypes = {
-            string: /^"[^"]*"/,
-            longArgument: /^--\S+/,
-            shortArgument: /^-\S+/,
-            identifier: /^\S+/,
-            whitespace: /^[\s\n\t\r ]+/,
-        } as const satisfies { [key: string]: RegExp };
+	document.addEventListener("keypress", (event) => {
+		if (event.key === "Enter") {
+			terminal.innerHTML += "<br/>";
+			runCommand();
+			terminal.innerHTML += "&gt; ";
+			currentCommand = "";
+			return;
+		}
+		terminal.innerHTML += event.key;
+		currentCommand += event.key;
+	});
 
-        type TokenType = keyof typeof tokenTypes;
+	function runCommand() {
+		const tokenTypes = {
+			string: /^"[^"]*"/,
+			longArgument: /^--\S+/,
+			shortArgument: /^-\S+/,
+			identifier: /^\S+/,
+			whitespace: /^[\s\n\t\r ]+/,
+		} as const satisfies { [key: string]: RegExp };
 
-        type Token = {
-            type: TokenType;
-            value: string;
-        };
+		type TokenType = keyof typeof tokenTypes;
 
-        function tokenize(code: string): Token[] {
-            let remainingCode = code;
-            let tokens: Token[] = [];
-            let matchFound = false;
-            while (remainingCode != "") {
-                for (let tokenType of Object.keys(tokenTypes)) {
-                    let match = tokenTypes[tokenType as TokenType].exec(remainingCode);
-                    if (match) {
-                        tokens.push({
-                            type: tokenType as TokenType,
-                            value: match[0],
-                        });
-                        remainingCode = remainingCode.substring(match[0].length);
-                        matchFound = true;
-                        break;
-                    }
-                }
+		type Token = {
+			type: TokenType;
+			value: string;
+		};
 
-                if (!matchFound) {
-                    throw `Unrecognized token: ${remainingCode}`;
-                }
-            }
+		function tokenize(code: string): Token[] {
+			let remainingCode = code;
+			let tokens: Token[] = [];
+			let matchFound = false;
+			while (remainingCode != "") {
+				for (let tokenType of Object.keys(tokenTypes)) {
+					let match = tokenTypes[tokenType as TokenType].exec(remainingCode);
+					if (match) {
+						tokens.push({
+							type: tokenType as TokenType,
+							value: match[0],
+						});
+						remainingCode = remainingCode.substring(match[0].length);
+						matchFound = true;
+						break;
+					}
+				}
 
-            return tokens;
-        }
+				if (!matchFound) {
+					throw `Unrecognized token: ${remainingCode}`;
+				}
+			}
 
-        console.log(currentCommand);
-        let tokens = tokenize(currentCommand);
-        let longArguments = tokens.filter((token) => token.type === "longArgument").map((token) => token.value);
-        let shortArguments = tokens.filter((token) => token.type === "shortArgument").map((token) => token.value);
-        let command = tokens.shift()!.value;
-        let positionalArguments = tokens.filter((token) => token.type === "identifier").map((token) => token.value);
+			return tokens;
+		}
 
-        let commandToRun = commands[command as keyof typeof commands];
-        if (!commandToRun) {
-            terminal.innerHTML += `Unrecognized command: ${command}<br/>`;
-            return;
-        }
+		let tokens = tokenize(currentCommand);
+		let longArguments = tokens.filter((token) => token.type === "longArgument").map((token) => token.value);
+		let shortArguments = tokens.filter((token) => token.type === "shortArgument").map((token) => token.value);
+		let command = tokens.shift()!.value;
+		let positionalArguments = tokens.filter((token) => token.type === "identifier").map((token) => token.value);
 
-        let output = commands[command as keyof typeof commands](positionalArguments, shortArguments, longArguments);
-        terminal.innerHTML += output;
-    }
+		let commandToRun = commands[command as keyof typeof commands];
+		if (!commandToRun) {
+			terminal.innerHTML += `Unrecognized command: ${command}<br/>`;
+			return;
+		}
+
+		let output = commands[command as keyof typeof commands](positionalArguments, shortArguments, longArguments);
+		terminal.innerHTML += output;
+	}
 </script>
 
-<section>
-    <p bind:this={terminal}>&gt;</p>
-</section>
+<Window name="Terminal">
+	<p bind:this={terminal}>&gt;</p>
+</Window>
 
 <style lang="scss">
-    section {
-        width: 800px;
-        height: 600px;
-        background-color: black;
-        color: white;
-        padding: 0.5rem;
-
-        p {
-            font-family: "Consolas";
-        }
-    }
+	p {
+		font-family: "Courier New";
+	}
 </style>
